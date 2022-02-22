@@ -29,7 +29,7 @@ public class CameraControll : MonoBehaviour
     void Update()
     {
         rePosition = Player.transform.position;
-        Kamera.transform.position = new Vector3(rePosition.x, rePosition.y + 5.310003f, rePosition.z -8.23f);
+        Kamera.transform.position = new Vector3(rePosition.x, rePosition.y + 5.310003f, rePosition.z - 8.23f);
         moveSpeed = playerMove.moveSpeed;
         leftRightSpeed = playerMove.leftRightSpeed;
         /*if (playerMove.playerGotL == true)
@@ -71,7 +71,6 @@ public class CameraControll : MonoBehaviour
     /*IEnumerator RePositionCamera()
     {
         Kamera.transform.position.Set(rePosition.x, rePosition.y, rePosition.z);
-
         yield return new WaitForSeconds(0.5f);
     }*/
 }

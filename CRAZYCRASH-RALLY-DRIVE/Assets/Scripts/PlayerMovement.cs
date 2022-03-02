@@ -13,7 +13,8 @@ public class PlayerMovement : MonoBehaviour
     private GameObject playerRotateR;
     private GameObject playerRotateF;
     private GameObject ScoreNumText;
-    public GameObject[] Esteet;
+    private GameObject startButtonB;
+    //public GameObject[] Esteet;
 
 
     //Components & Scripts
@@ -22,6 +23,7 @@ public class PlayerMovement : MonoBehaviour
     private CapsuleCollider esteCollider;
     private BoxCollider playerBoxCollider;
     private PlayerColor playerColor;
+    private StartButton startButtonS;
     /*private Material playerMaterial;
     private Renderer playerRenderer;
     private Color playerColor;*/
@@ -42,19 +44,25 @@ public class PlayerMovement : MonoBehaviour
     public bool playerGotL = false;
     public bool isPlayerDead = false;
     public bool playerMoving = false;
+    public bool IsTutorialEnded = false;
+    public bool IsThatFirstStart = true;
 
 
     // Int
-    private int osumat = 0;
+    [HideInInspector]
+    public int osumat = 0;
+    [HideInInspector]
+    public int maxOsumat = 10;
     //private int esteidenMaara = 0;
-    private int i = 0;
+    //private int i = 0;
     //private int ii = 0;
     //private int iii = 0;
 
 
     // Vector
     public Vector3 stuckForce;
-    private Vector3 playerPos_2z;
+    private Vector3 playerPos_4z;
+    private Vector3 aloitusTienLoppu;
 
 
     void Start()
@@ -64,6 +72,9 @@ public class PlayerMovement : MonoBehaviour
         playerRotateL = GameObject.Find("playerRotationL");
         playerRotateR = GameObject.Find("playerRotationR");
         playerRotateF = GameObject.Find("playerRotationF");
+
+        startButtonB = GameObject.Find("StartButton");
+        startButtonS = startButtonB.GetComponent<StartButton>();
 
         playerBoxCollider = Player.GetComponent<BoxCollider>();
 
@@ -77,20 +88,23 @@ public class PlayerMovement : MonoBehaviour
         {
             colliders.GetComponent<CapsuleCollider>();
         }*/
-        Esteet = GameObject.FindGameObjectsWithTag("Este");
+        //Esteet = GameObject.FindGameObjectsWithTag("Este");
 
         rb = this.GetComponent<Rigidbody>();
 
-        ScoreNumText = GameObject.Find("ScoreNumText");
-        scoreControll = ScoreNumText.GetComponent<ScoreControll>();
+        
 
         playerColor = Player.GetComponent<PlayerColor>();
         ///Este = GameObject.Find("Rock");
         ///este = Este.GetComponent<Este>();
+        ///
+
+        aloitusTienLoppu = new Vector3(0f, 0f, 17.5f);
     }
 
     void Update()
     {
+        
 
         //Esteet = GameObject.FindGameObjectsWithTag("Este");
         //Debug.Log(Esteet.Length);
@@ -109,15 +123,25 @@ public class PlayerMovement : MonoBehaviour
         {
             playerMoving = false;
             playerGotL = true;
-            lowSpeed = PmoveSpeed - 1.8f;
+            lowSpeed = PmoveSpeed - 2f;
             transform.Translate(lowSpeed * Time.deltaTime * Vector3.forward, Space.World);
             Vector3 targetPoint3 = (playerRotateF.transform.position);
             Player.transform.LookAt(targetPoint3);
             //rb.AddForce(stuckForce, ForceMode.Impulse);
 
         }
-        Move();
-        PlayerPosChecking();
+
+        if (startButtonS.IsGameStarted == true)
+        {
+            ScoreNumText = GameObject.Find("ScoreNumText");
+            scoreControll = ScoreNumText.GetComponent<ScoreControll>();
+            if (IsThatFirstStart == true)
+            {
+                StartCoroutine(TutorialTie());
+            }
+            Move();
+        }
+        //PlayerPosChecking();
     }
 
     private void Move()
@@ -132,7 +156,7 @@ public class PlayerMovement : MonoBehaviour
             playerMoveLeft = false;
             playerMoveRight = false;
 
-            if (Input.GetKey(KeyCode.A) && playerMoveRight == false || Input.GetKey(KeyCode.LeftArrow) && playerMoveRight == false)
+            if (Input.GetKey(KeyCode.A) && playerMoveRight == false && IsTutorialEnded == true || Input.GetKey(KeyCode.LeftArrow) && playerMoveRight == false && IsTutorialEnded == true)
             {
 
                 Vector3 targetPoint = (playerRotateL.transform.position);
@@ -152,7 +176,7 @@ public class PlayerMovement : MonoBehaviour
                 }*/
 
             }
-            else if (Input.GetKey(KeyCode.D) && playerMoveLeft == false || Input.GetKey(KeyCode.RightArrow) && playerMoveLeft == false)
+            else if (Input.GetKey(KeyCode.D) && playerMoveLeft == false && IsTutorialEnded == true || Input.GetKey(KeyCode.RightArrow) && playerMoveLeft == false && IsTutorialEnded == true)
             {
 
                 Vector3 targetPoint2 = (playerRotateR.transform.position);
@@ -191,7 +215,7 @@ public class PlayerMovement : MonoBehaviour
             //StartCoroutine(CollidersOn());
             StartCoroutine(PlayerColliderOn());
         }
-        if (osumat == 20)
+        if (osumat == maxOsumat)
         {
             isPlayerDead = true;
             gameObject.SetActive(false);
@@ -217,7 +241,7 @@ public class PlayerMovement : MonoBehaviour
         Player.transform.rotation = -20f;
     }*/
 
-    private void PlayerPosChecking()
+    /*private void PlayerPosChecking()
     {
         if (Player.transform.position.z < 30f)
         {
@@ -227,7 +251,7 @@ public class PlayerMovement : MonoBehaviour
         {
             scoreControll.IsThatStart = false;
         }
-    }
+    }*/
 
     /*IEnumerator PlayerColorBlink()
     {
@@ -249,10 +273,10 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator PlayerColliderOn()
     {
-        playerPos_2z.z = Player.transform.position.z + 4.5f;
+        playerPos_4z.z = Player.transform.position.z + 4.2f;
         //playerBoxCollider.enabled = true;
         //Debug.Log("Toimiiko?");
-        yield return new WaitUntil(() => Player.transform.position.z >= playerPos_2z.z);
+        yield return new WaitUntil(() => Player.transform.position.z >= playerPos_4z.z);
         playerCollideWithOsb = false;
         playerBoxCollider.enabled = true;
         playerColor.playerRenderer.material.color = playerColor.playerNormalColor;
@@ -284,4 +308,11 @@ public class PlayerMovement : MonoBehaviour
         playerCollideWithOsb = false;
         yield return new WaitForSeconds(20);
     }*/
+
+    IEnumerator TutorialTie()
+    {
+        yield return new WaitUntil(() => Player.transform.position.z >= aloitusTienLoppu.z);
+        IsTutorialEnded = true;
+        IsThatFirstStart = false;
+    }
 }

@@ -11,6 +11,11 @@ public class MenuController : MonoBehaviour
     public GameObject MainMenu;
     public GameObject StartMenu;
     public GameObject GarageMenu;
+    public GameObject scoreCanvas;
+
+    public void Start()
+    {
+    }
 
     public void StartM()
     {
@@ -20,6 +25,7 @@ public class MenuController : MonoBehaviour
         StartMenu.SetActive(true);
         GarageCamera.SetActive(false);
         GarageMenu.SetActive(false);
+        scoreCanvas.SetActive(false);
     }
     public void MainM()
     {
@@ -38,6 +44,12 @@ public class MenuController : MonoBehaviour
         StartMenu.SetActive(false);
         GarageCamera.SetActive(true);
         GarageMenu.SetActive(true);
+        scoreCanvas.SetActive(false);
+    }
+    
+    public void ScoreCanvas()
+    {
+        scoreCanvas.SetActive(true);
     }
 
     public void quit()

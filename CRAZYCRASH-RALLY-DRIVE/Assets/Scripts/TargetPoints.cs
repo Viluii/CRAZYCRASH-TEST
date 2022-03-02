@@ -40,6 +40,11 @@ public class TargetPoints : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Debug.Log("Quit!");
+            Application.Quit();
+        }
         rePositionF = Player.transform.position;
         rePositionL = Player.transform.position;
         rePositionR = Player.transform.position;
